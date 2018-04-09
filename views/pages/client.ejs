@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Buzzer Admin</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body class="text-center">
+
+<h1>Buzzer App</h1>
+<div id="input">
+  <input type="text" id="name" value="Player one">
+  <button id="set_name" class="btn btn-success">Set Name</button>
+</div>
+
+<button id="buzzer" style="height: 200px; width: 200px;" class="btn btn-danger">Buzzer</button>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
+    <script>
+      var socket = io();
+      jQuery(function ($) {
+
+        $( "#buzzer" ).hide();
+        var hidden_button = true;
+
+        $( "#buzzer" ).on( "click", function() {
+            socket.emit('buzzer',$( "#name" ).val() ,"buzzer");
+        });
+
+        $( "#set_name" ).on( "click", function() {
+
+          hidden_button = false;
+
+          $( "#input" ).hide();
+          $( "#buzzer" ).show();
+        });
+
+        $('#name').keyup(function() {
+
+        var empty = false;
+        $('#name').each(function() {
+            if ($(this).val().length == 0) {
+                empty = true;
+            }
+        });
+
+        if (empty) {
+            $('#set_name').attr('disabled', 'disabled');
+        } else {
+            $('#set_name').removeAttr('disabled');
+        }
+    });
+
+    $('body').keyup(function(e){
+       if(e.keyCode == 32 && !hidden_button){
+           // user has pressed space
+          $( "#buzzer" ).addClass('active');
+          $( "#buzzer" ).trigger( "click" );
+          
+          setTimeout(function(){
+            $( "#buzzer" ).removeClass('active'); 
+          }, 100);
+
+
+          
+
+
+         }
+    });
+
+      	console.log(socket);
+      });
+    </script>
+
+</body>
+</html>
